@@ -1,0 +1,35 @@
+{
+  "name": "waterline-soap",
+  "version": "0.10.0",
+  "description": "AnyPresence waterline-soap adapter for Sails / Waterline",
+  "main": "lib/adapter.js",
+  "scripts": {
+    "test": "mocha test --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/AnyPresence/waterline-soap-adapter"
+  },
+  "author": {
+    "name": "AnyPresence"
+  },
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "soap": "0.8.0"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "1.10.0",
+    "nock": "0.51.0"
+  },
+  "waterlineAdapter": {
+    "type": "waterline-soap",
+    "interfaces": [],
+    "waterlineVersion": "~0.10.0"
+  },
+  "bugs": {
+    "url": "https://github.com/AnyPresence/waterline-soap-adapter/issues"
+  },
+  "homepage": "https://github.com/AnyPresence/waterline-soap-adapter"
+}
