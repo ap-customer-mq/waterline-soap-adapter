@@ -2,32 +2,83 @@ var adapter = require('../../'),
   assert = require('chai').assert,
   connections = require('../stubs/connections'),
   nock = require('nock'),
-  util = require('util');
+  util = require('util'),
+  libxmljs = require('libxmljs'),
+  getStationsStub = require('../stubs/soap').getStationsResponse;
 
-var waterline, Model;
+var waterline, Station;
 
 before(function(done) {
   var fn = require('../bootstrap-waterline');
   var collections = {
-    "V1Model": require('../stubs/V1Model')
+    "Station": require('../stubs/Station')
   };
   waterline = fn(connections, collections, function(err, ontology) {
-    Model = ontology.collections['v1model'];
+    Station = ontology.collections['station'];
     done(err);
   });
 });
 
-describe('Mocha', function() {
-  it('should be set up correctly', function(done) {
-    var args = { 
-        'searchQuery': {
-            'orgID': '1:ORG08313'
-        }
-    };
+describe('SOAP Adapter', function() {
+  
+  describe('Query Scopes', function() {
     
-    Model.request('getStations', args, {}, function(err, result) {
-      console.log('result: ' + util.inspect(result));
-      assert.isNull(err);
+    it('should successfully invoke getStations call', function(done) {
+      var args = { 
+        organizationId: '1:ORG08313'
+      };
+
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1')
+          .reply(200, getStationsStub);
+
+      Station.request('getStationsForOrganizationScope', args, {}, function(err, result) {
+        assert.isArray(result);
+        assert.equal(result.length, 3);
+        done();
+      });
+    });
+      
+    it ('should successfully map fields', function(done) {
+      var args = { 
+        organizationId: '1:ORG08313'
+      };
+      
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1')
+          .reply(200, getStationsStub);
+
+      Station.request('getStationsForOrganizationScope', args, {}, function(err, result) {
+        var first = result[0];
+        assert.strictEqual(first.id, '1:87063');
+        assert.strictEqual(first.stationManufacturer, 'Schneider');
+        assert.strictEqual(first.stationModel, 'EV230PDRACG');
+        assert.strictEqual(first.stationSerialNumber, '1307311001A0');
+        assert.strictEqual(first.numPorts, 2);
+        assert.strictEqual(first.organizationId, '1:ORG08313');
+        assert.strictEqual(first.organizationName, 'SchneiderDemo');
+        assert.strictEqual(first.sgId, '48981, 49683, 38623, 40815, 42613, 45487, 45677, 49167');
+        assert.strictEqual(first.sgName, 'Demo, Raleigh Demo Stations, Public Stations, Available and In Use 2, OnRamp 3.5.1 Controlled Release2, Level 2 Ports, All OnRamp Stations, SouthEast');
+        done();
+      });
+    });
+    
+    it('should not fail when it receives a 500 error', function(done) {
+      var args = {
+        organizationId: '1:ORG08313'
+      };
+      
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1')
+          .reply(500);
+          
+      /*Station.request('getStationsForOrganizationScope', args, {}, function(err, result) {
+        // TODO - finish this test case
+        
+        done();
+      });*/
+      
+      assert.fail('Not implemented', 'Implemented','Test case needs to be implemented');
       done();
     });
   });

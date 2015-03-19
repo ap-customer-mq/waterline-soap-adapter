@@ -6,7 +6,7 @@ var Waterline = require('waterline'),
 sails = {
   log: {
     debug: function(msg) {
-      return;
+      console.log("[DEBUG] " + msg);
     }
   }
 };
