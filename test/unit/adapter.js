@@ -4,7 +4,10 @@ var adapter = require('../../'),
   nock = require('nock'),
   util = require('util'),
   libxmljs = require('libxmljs'),
-  getStationsStub = require('../stubs/soap').getStationsResponse;
+  stubs = require('../stubs/soap');
+
+var getStationsStub = stubs.getStationsResponse;
+var getStationsByStationModelResponse = stubs.getStationsByStationModelResponse;
 
 var waterline, Station;
 

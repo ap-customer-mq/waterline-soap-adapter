@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Header>
+    <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" soapenv:mustUnderstand="1">
+      <wsu:Timestamp xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+        <wsu:Created>2015-03-20T16:00:32.835Z</wsu:Created>
+        <wsu:Expires>2015-03-20T16:05:32.835Z</wsu:Expires>
+      </wsu:Timestamp>
+    </wsse:Security>
+  </soapenv:Header>
+  <soapenv:Body>
+    <ns1:getStationsResponse xmlns:ns1="urn:dictionary:com.chargepoint.webservices">
+      <responseCode>100</responseCode>
+      <responseText>API input request executed successfully.</responseText>
+      <stationData>
+        <stationID>1:87063</stationID>
+        <stationManufacturer>Schneider</stationManufacturer>
+        <stationModel>EV230PDRACG</stationModel>
+        <stationMacAddr>000D:6F00:0154:EF55</stationMacAddr>
+        <stationSerialNum>1307311001A0</stationSerialNum>
+        <Address>8001 Knightdale Blvd </Address>
+        <City>Knightdale</City>
+        <State>North Carolina</State>
+        <Country>United States</Country>
+        <postalCode>27545</postalCode>
+        <Port>
+          <portNumber>1</portNumber>
+          <stationName>SCHNEIDER_DEMO / DEMO1</stationName>
+          <Geo>
+            <Lat>35.808016015484950</Lat>
+            <Long>-78.461189001817730</Long>
+          </Geo>
+          <Description>-</Description>
+          <Reservable>0</Reservable>
+          <Status>INUSE</Status>
+          <Level>L2</Level>
+          <Connector>J1772</Connector>
+          <Voltage>240</Voltage>
+          <Current>30</Current>
+          <Power>7.2</Power>
+          <estimatedCost>0.00</estimatedCost>
+        </Port>
+        <Port>
+          <portNumber>2</portNumber>
+          <stationName>SCHNEIDER_DEMO / DEMO1</stationName>
+          <Geo>
+            <Lat>35.808016015484950</Lat>
+            <Long>-78.461189001817730</Long>
+          </Geo>
+          <Description>-</Description>
+          <Reservable>0</Reservable>
+          <Status>INUSE</Status>
+          <Level>L2</Level>
+          <Connector>J1772</Connector>
+          <Voltage>240</Voltage>
+          <Current>30</Current>
+          <Power>7.2</Power>
+          <estimatedCost>0.00</estimatedCost>
+        </Port>
+        <numPorts>2</numPorts>
+        <mainPhone>1-888-758-4389</mainPhone>
+        <currencyCode>USD</currencyCode>
+        <orgID>1:ORG08313</orgID>
+        <organizationName>SchneiderDemo</organizationName>
+        <sgID>48981, 49683, 38623, 40815, 42613, 45487, 45677, 49167</sgID>
+        <sgName>Demo, Raleigh Demo Stations, Public Stations, Available and In Use 2, OnRamp 3.5.1 Controlled Release2, Level 2 Ports, All OnRamp Stations, SouthEast</sgName>
+      </stationData>
+      <stationData>
+        <stationID>1:111277</stationID>
+        <stationManufacturer>Schneider</stationManufacturer>
+        <stationModel>EV230PDRACG</stationModel>
+        <stationMacAddr>000D:6F00:01DA:1F41</stationMacAddr>
+        <stationSerialNum>1439312002A0</stationSerialNum>
+        <Address>8001 Knightdale Blvd </Address>
+        <City>Knightdale</City>
+        <State>North Carolina</State>
+        <Country>United States</Country>
+        <postalCode>27545</postalCode>
+        <Port>
+          <portNumber>1</portNumber>
+          <stationName>SCHNEIDER_DEMO / DEMO3</stationName>
+          <Geo>
+            <Lat>35.808005837296854</Lat>
+            <Long>-78.461253744705230</Long>
+          </Geo>
+          <Reservable>0</Reservable>
+          <Status>UNREACHABLE</Status>
+          <Level>L2</Level>
+          <Connector>J1772</Connector>
+          <Voltage>240</Voltage>
+          <Current>30</Current>
+          <Power>7.2</Power>
+          <estimatedCost>0.00</estimatedCost>
+        </Port>
+        <Port>
+          <portNumber>2</portNumber>
+          <stationName>SCHNEIDER_DEMO / DEMO3</stationName>
+          <Geo>
+            <Lat>35.808005837296854</Lat>
+            <Long>-78.461253744705230</Long>
+          </Geo>
+          <Reservable>0</Reservable>
+          <Status>UNREACHABLE</Status>
+          <Level>L2</Level>
+          <Connector>J1772</Connector>
+          <Voltage>240</Voltage>
+          <Current>30</Current>
+          <Power>7.2</Power>
+          <estimatedCost>0.00</estimatedCost>
+        </Port>
+        <numPorts>2</numPorts>
+        <mainPhone>1-888-758-4389</mainPhone>
+        <currencyCode>USD</currencyCode>
+        <orgID>1:ORG08313</orgID>
+        <organizationName>SchneiderDemo</organizationName>
+        <sgID>42407, 38623, 42613, 45487, 45677, 49167</sgID>
+        <sgName>SchneiderDemo, Public Stations, OnRamp 3.5.1 Controlled Release2, Level 2 Ports, All OnRamp Stations, SouthEast</sgName>
+      </stationData>
+    </ns1:getStationsResponse>
+  </soapenv:Body>
+</soapenv:Envelope>
