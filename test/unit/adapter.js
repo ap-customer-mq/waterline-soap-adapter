@@ -36,6 +36,7 @@ describe('SOAP Adapter', function() {
           .reply(200, getStationsStub);
 
       Station.request('getStationsForOrganizationScope', args, {}, function(err, result) {
+        assert.isNull(err);        
         assert.isArray(result);
         assert.equal(result.length, 3);
         done();
@@ -52,6 +53,7 @@ describe('SOAP Adapter', function() {
           .reply(200, getStationsStub);
 
       Station.request('getStationsForOrganizationScope', args, {}, function(err, result) {
+        assert.isNull(err);
         var first = result[0];
         assert.strictEqual(first.id, '1:87063');
         assert.strictEqual(first.stationManufacturer, 'Schneider');
