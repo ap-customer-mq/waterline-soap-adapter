@@ -24,7 +24,7 @@
   "devDependencies": {
     "mocha": "*",
     "chai": "1.10.0",
-    "nock": "0.51.0",
+    "nock": "0.59.0",
     "waterline": "^0.10.14"
   },
   "waterlineAdapter": {
