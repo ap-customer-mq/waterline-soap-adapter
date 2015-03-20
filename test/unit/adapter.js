@@ -68,7 +68,27 @@ describe('SOAP Adapter', function() {
       });
     });
     
-    it('should not fail when it receives a 500 error', function(done) {
+    it ('should allow default parameters', function(done) {
+      var args = {};
+      
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1', function(body) { 
+            assert(body.indexOf("<stationModel>EV230PDRACG</stationModel>") !== -1, 'expected request body to contain default value for stationModel parameter');
+            return body.indexOf("<stationModel>EV230PDRACG</stationModel>") !== -1;
+          })
+          .reply(200, getStationsByStationModelResponse);
+      
+      Station.request('getStationByStationModelScope', args, {}, function(err, result) {
+        assert.isNull(err);
+        assert.isArray(result);
+        assert.equal(result.length, 2);
+        done();
+      });
+    });
+    
+    
+    
+/*    it('should not fail when it receives a 500 error', function(done) {
       var args = {
         organizationId: '1:ORG08313'
       };
