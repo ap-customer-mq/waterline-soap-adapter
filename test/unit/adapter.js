@@ -9,6 +9,7 @@ var adapter = require('../../'),
 var getStationsStub = stubs.getStationsResponse;
 var getStationsByStationModelResponse = stubs.getStationsByStationModelResponse;
 var getStationsByStationIdResponse = stubs.getStationsByStationIdResponse;
+var exampleSoapFault = stubs.exampleSoapFault;
 
 var waterline, Station;
 
@@ -35,9 +36,29 @@ describe('SOAP Adapter', function() {
     });
     
     it('SOAPFaults should be gracefully handled', function(done) {
-      
-      
-      assert.fail("Implement me!");
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1')
+          .reply(500, exampleSoapFault);
+            
+      Station.request('getStationsForOrganizationScope', {}, {}, function(err, result) {
+        assert.isNotNull(err);
+        assert.equal(err.body, exampleSoapFault);
+        assert.equal(err.response.statusCode, 500);
+        done();
+      });
+    });
+    
+    it('SOAPFaults should be gracefully handled even when the client returns a 200 http status code', function(done) {
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1')
+          .reply(200, exampleSoapFault);
+            
+      Station.request('getStationsForOrganizationScope', {}, {}, function(err, result) {
+        assert.isNotNull(err);
+        assert.equal(err.body, exampleSoapFault);
+        assert.equal(err.response.statusCode, 200);
+        done();
+      });
     });
     
     // TODO - 404 and other error codes in which there's no SOAPFault
