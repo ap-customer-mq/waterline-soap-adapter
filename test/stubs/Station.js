@@ -105,5 +105,12 @@ module.exports = {
               }
             }
         },
+        scopeWithInvalidOperation: {
+          operation: 'invalidWsdlOperation',
+          namespaces: {
+            'soap': 'http://schemas.xmlsoap.org/soap/envelope/',
+            'ns1': 'urn:dictionary:com.chargepoint.webservices'
+          }
+        }
     }
 };

@@ -26,6 +26,14 @@ before(function(done) {
 describe('SOAP Adapter', function() {
   
   describe('Exception scenarios', function() {
+    
+    it ('should gracefully handle an undefined operation', function(done) {
+      Station.request('scopeWithInvalidOperation', {}, {}, function(err, result) {
+        assert.equal(err, "The requested SOAP operation 'invalidWsdlOperation' is not valid");
+        done();
+      });
+    });
+    
     it('SOAPFaults should be gracefully handled', function(done) {
       
       
