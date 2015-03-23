@@ -163,9 +163,7 @@ describe('SOAP Adapter', function() {
           })
           .reply(200, getStationsByStationIdResponse);
       
-      Station.soap.getStationByStationIdScope.mapping.request.stationId = 'tns:searchQuery[tns:stationID]';
-      
-      Station.request('getStationByStationIdScope', args, {}, function(err, result) {
+      Station.request('getStationByStationIdWithNamespacedRequestMappingsScope', args, {}, function(err, result) {
         assert.isNull(err);
         assert.isArray(result);
         assert.equal(result.length, 1);
