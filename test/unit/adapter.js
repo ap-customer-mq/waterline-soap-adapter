@@ -8,6 +8,7 @@ var adapter = require('../../'),
 
 var getStationsStub = stubs.getStationsResponse;
 var getStationsByStationModelResponse = stubs.getStationsByStationModelResponse;
+var getStationsByStationIdResponse = stubs.getStationsByStationIdResponse;
 
 var waterline, Station;
 
@@ -86,7 +87,49 @@ describe('SOAP Adapter', function() {
       });
     });
     
+    it ('should parse request mappings', function(done) {
+      
+      var args = {
+        stationId: "1:87063"
+      };
+      
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1', function(body) { 
+            assert(body.indexOf("<searchQuery><stationID>1:87063</stationID></searchQuery>") !== -1, 'expected request body to contain default value for stationID parameter');
+            return body.indexOf("<searchQuery><stationID>1:87063</stationID></searchQuery>") !== -1;
+          })
+          .reply(200, getStationsByStationIdResponse);
+      
+      Station.request('getStationByStationIdScope', args, {}, function(err, result) {
+        assert.isNull(err);
+        assert.isArray(result);
+        assert.equal(result.length, 1);
+        done();
+      });
+    });
     
+    it ('should allow namespaces in request mappings', function(done) {
+      
+      var args = {
+        stationId: "1:87063"
+      };
+      
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1', function(body) { 
+            assert(body.indexOf("<tns:searchQuery><tns:stationID>1:87063</tns:stationID></tns:searchQuery>") !== -1, 'expected request body to contain value for stationID parameter with specified namespaces');
+            return body.indexOf("<tns:searchQuery><tns:stationID>1:87063</tns:stationID></tns:searchQuery>") !== -1;
+          })
+          .reply(200, getStationsByStationIdResponse);
+      
+      Station.soap.getStationByStationIdScope.mapping.request.stationId = 'tns:searchQuery[tns:stationID]';
+      
+      Station.request('getStationByStationIdScope', args, {}, function(err, result) {
+        assert.isNull(err);
+        assert.isArray(result);
+        assert.equal(result.length, 1);
+        done();
+      });
+    });
     
 /*    it('should not fail when it receives a 500 error', function(done) {
       var args = {

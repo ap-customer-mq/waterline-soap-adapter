@@ -3,7 +3,8 @@ var fs = require('fs')
 
 module.exports = {
   getStationsResponse: fs.readFileSync(path.join(__dirname, 'soap', 'getStationsResponse.xml')).toString(),
-  getStationsByStationModelResponse: fs.readFileSync(path.join(__dirname, 'soap', 'getStationsByStationModelResponse.xml')).toString()
+  getStationsByStationModelResponse: fs.readFileSync(path.join(__dirname, 'soap', 'getStationsByStationModelResponse.xml')).toString(),
+  getStationsByStationIdResponse: fs.readFileSync(path.join(__dirname, 'soap', 'getStationsByStationIdResponse.xml')).toString()
 };
 
 
