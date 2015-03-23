@@ -25,6 +25,28 @@ before(function(done) {
 
 describe('SOAP Adapter', function() {
   
+  describe('Exception scenarios', function() {
+    it('SOAPFaults should be gracefully handled', function(done) {
+      
+      
+      assert.fail("Implement me!");
+    });
+    
+    // TODO - 404 and other error codes in which there's no SOAPFault
+    
+    // TODO - other exception scenarios
+  });
+  
+  // TODO - tests for default behavior
+  
+  describe('CRUD Operations', function() {
+    it('should handle CRUD scenarios', function(done) {
+      assert.fail('Implement me!');
+    });
+    
+    // TODO - finish crud scenarios
+  });
+  
   describe('Query Scopes', function() {
     
     it('should successfully invoke getStations call', function(done) {
@@ -108,6 +130,18 @@ describe('SOAP Adapter', function() {
       });
     });
     
+    it ('should handle default behavior if no request mappings are provided (TODO - rewrite description of this case)', function(done) {
+      assert.fail("Implement me");
+    }); 
+    
+    it ('should handle default behavior if no response mappings are provided (TODO - rewrite description of this case)', function(done) {
+      assert.fail("Implement me");
+    });
+    
+    it ('should handle default behavior if no pathSelector is provided (TODO - rewrite description of this case)', function(done) {
+      assert.fail("Implement me");
+    }); 
+    
     it ('should allow namespaces in request mappings', function(done) {
       
       var args = {
@@ -131,23 +165,5 @@ describe('SOAP Adapter', function() {
       });
     });
     
-/*    it('should not fail when it receives a 500 error', function(done) {
-      var args = {
-        organizationId: '1:ORG08313'
-      };
-      
-//      nock('https://webservices.chargepoint.com')
-//          .post('/webservices/chargepoint/services/4.1')
-//          .reply(500);
-          
-      //Station.request('getStationsForOrganizationScope', args, {}, function(err, result) {
-      //  // TODO - finish this test case
-      //  
-      //  done();
-      //});
-      
-      assert.fail('Not implemented', 'Implemented','Test case needs to be implemented');
-      done();
-    });*/
   });
 });
