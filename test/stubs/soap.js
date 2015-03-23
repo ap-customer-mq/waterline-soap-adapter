@@ -1,11 +1,13 @@
 var fs = require('fs')
     path = require('path');
 
+function loadSoapMessage(faultResponse) {
+  return fs.readFileSync(path.join(__dirname, 'soap', faultResponse + ".xml")).toString();
+}
+
 module.exports = {
-  getStationsResponse: fs.readFileSync(path.join(__dirname, 'soap', 'getStationsResponse.xml')).toString(),
-  getStationsByStationModelResponse: fs.readFileSync(path.join(__dirname, 'soap', 'getStationsByStationModelResponse.xml')).toString(),
-  getStationsByStationIdResponse: fs.readFileSync(path.join(__dirname, 'soap', 'getStationsByStationIdResponse.xml')).toString()
+  getStationsResponse: loadSoapMessage('getStationsResponse'),
+  getStationsByStationModelResponse: loadSoapMessage('getStationsByStationModelResponse'),
+  getStationsByStationIdResponse: loadSoapMessage('getStationsByStationIdResponse'),
+  exampleSoapFault: loadSoapMessage('exampleSoapFault')
 };
-
-
-

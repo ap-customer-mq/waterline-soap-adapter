@@ -1,0 +1,9 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Header></soapenv:Header>
+  <soapenv:Body>
+    <soapenv:Fault>
+      <faultcode>soapenv:Client</faultcode>
+      <faultstring>Array list index out of bounds</faultstring>
+    </soapenv:Fault>
+  </soapenv:Body>
+</soapenv:Envelope>
