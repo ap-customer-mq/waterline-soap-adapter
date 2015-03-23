@@ -35,7 +35,7 @@ describe('SOAP Adapter', function() {
       });
     });
     
-    it('SOAPFaults should be gracefully handled', function(done) {
+    it('should gracefully handle SOAPFaults', function(done) {
       nock('https://webservices.chargepoint.com')
           .post('/webservices/chargepoint/services/4.1')
           .reply(500, exampleSoapFault);
@@ -48,7 +48,7 @@ describe('SOAP Adapter', function() {
       });
     });
     
-    it('SOAPFaults should be gracefully handled even when the client returns a 200 http status code', function(done) {
+    it('should gracefully handle SOAPFaults even when the client returns a 200 http status code', function(done) {
       nock('https://webservices.chargepoint.com')
           .post('/webservices/chargepoint/services/4.1')
           .reply(200, exampleSoapFault);
@@ -62,6 +62,7 @@ describe('SOAP Adapter', function() {
     });
     
     // TODO - 404 and other error codes in which there's no SOAPFault
+    
     
     // TODO - other exception scenarios
   });
