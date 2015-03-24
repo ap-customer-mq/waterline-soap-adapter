@@ -158,6 +158,21 @@ module.exports = {
               sgName: './sgName/text()'
             }
           }
-        }
+        },
+        scopeWithNoResponseMappings: {
+            operation: 'getStations',
+            namespaces: {
+              'soap': 'http://schemas.xmlsoap.org/soap/envelope/',
+              'ns1': 'urn:dictionary:com.chargepoint.webservices'
+            },
+            pathSelector: '/soap:Envelope/soap:Body/ns1:getStationsResponse/stationData',
+            mapping: {
+              request: {
+                stationId: 'searchQuery[stationID]'
+              },
+              response: {
+              }
+            }
+        },
     }
 };

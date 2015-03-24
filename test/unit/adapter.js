@@ -4,7 +4,8 @@ var adapter = require('../../'),
   nock = require('nock'),
   util = require('util'),
   libxmljs = require('libxmljs'),
-  stubs = require('../stubs/soap');
+  stubs = require('../stubs/soap'),
+  _ = require('lodash');
 
 var getStationsStub = stubs.getStationsResponse;
 var getStationsByStationModelResponse = stubs.getStationsByStationModelResponse;
@@ -192,11 +193,29 @@ describe('SOAP Adapter', function() {
         assert.equal(result.length, 3);
         done();
       });
-    }); 
+    });
     
     it ('should handle default behavior if no response mappings are provided (TODO - rewrite description of this case)', function(done) {
-      assert.fail("Implement me");
+      var args = {};
+      
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1')
+          .reply(200, getStationsStub);
+      
+      Station.request('scopeWithNoResponseMappings', args, {}, function(err, result) {
+        assert.isNull(err);
+        assert.isArray(result);
+        assert.equal(result.length, 3);
+        for (var i = 0; i < 3; i++) { assert(_.isEmpty(result[i].toObject())); }
+        done();
+      });
     });
+    
+    // TODO - no path selector
+    
+    // TODO - path selector selects nothing
+    
+    // TODO - no mapping or request or response element
     
     it ('should handle default behavior if no pathSelector is provided (TODO - rewrite description of this case)', function(done) {
       assert.fail("Implement me");
