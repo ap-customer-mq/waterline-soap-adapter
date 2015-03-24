@@ -196,6 +196,30 @@ module.exports = {
                 sgName: '/soap:Envelope/soap:Body/ns1:getStationsResponse/stationData[1]/sgName/text()'
               }
             }
+        },
+        scopeWithBogusPathSelector: {
+            operation: 'getStations',
+            namespaces: {
+              'soap': 'http://schemas.xmlsoap.org/soap/envelope/',
+              'ns1': 'urn:dictionary:com.chargepoint.webservices'
+            },
+            pathSelector: '/some/bogus/path/selector',
+            mapping: {
+              request: {
+                stationId: 'searchQuery[stationID]'
+              },
+              response: {
+                id: './stationID/text()',
+                stationManufacturer: './stationManufacturer/text()',
+                stationModel: './stationModel/text()',
+                stationSerialNumber: './stationSerialNum/text()',
+                numPorts: './numPorts/text()',
+                organizationId: './orgID/text()',
+                organizationName: './organizationName/text()',
+                sgId: './sgID/text()',
+                sgName: './sgName/text()'
+              }
+            }
         }
     }
 };

@@ -211,7 +211,20 @@ describe('SOAP Adapter', function() {
       });
     });
     
-    // TODO - path selector selects nothing
+    it ('should gracefully handle a response where the path selector does not select a valid node', function(done) {
+      var args = {};
+
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1')
+          .reply(200, getStationsStub);
+      
+      Station.request('scopeWithBogusPathSelector', args, {}, function(err, result) {
+        assert.isNull(err);
+        assert.isArray(result);
+        assert.equal(result.length, 0);
+        done();
+      });
+    });
     
     // TODO - no mapping or request or response element
     
