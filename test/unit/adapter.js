@@ -211,15 +211,37 @@ describe('SOAP Adapter', function() {
       });
     });
     
-    // TODO - no path selector
-    
     // TODO - path selector selects nothing
     
     // TODO - no mapping or request or response element
     
-    it ('should handle default behavior if no pathSelector is provided (TODO - rewrite description of this case)', function(done) {
-      assert.fail("Implement me");
-    }); 
+    it ('should not fail if no pathSelector is provided', function(done) {
+      var args = {};
+      
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1')
+          .reply(200, getStationsStub);
+      
+      Station.request('scopeWithNoPathSelector', args, {}, function(err, result) {
+        assert.isNull(err);
+        
+        assert.isArray(result);
+        assert.equal(result.length, 1);
+
+        var first = result[0];
+        assert.strictEqual(first.id, '1:87063');
+        assert.strictEqual(first.stationManufacturer, 'Schneider');
+        assert.strictEqual(first.stationModel, 'EV230PDRACG');
+        assert.strictEqual(first.stationSerialNumber, '1307311001A0');
+        assert.strictEqual(first.numPorts, 2);
+        assert.strictEqual(first.organizationId, '1:ORG08313');
+        assert.strictEqual(first.organizationName, 'SchneiderDemo');
+        assert.strictEqual(first.sgId, '48981, 49683, 38623, 40815, 42613, 45487, 45677, 49167');
+        assert.strictEqual(first.sgName, 'Demo, Raleigh Demo Stations, Public Stations, Available and In Use 2, OnRamp 3.5.1 Controlled Release2, Level 2 Ports, All OnRamp Stations, SouthEast');
+
+        done();
+      });
+    });
     
     it ('should allow namespaces in request mappings', function(done) {
       

@@ -174,5 +174,28 @@ module.exports = {
               }
             }
         },
+        scopeWithNoPathSelector: {
+            operation: 'getStations',
+            namespaces: {
+              'soap': 'http://schemas.xmlsoap.org/soap/envelope/',
+              'ns1': 'urn:dictionary:com.chargepoint.webservices'
+            },
+            mapping: {
+              request: {
+                
+              },
+              response: {
+                id: '/soap:Envelope/soap:Body/ns1:getStationsResponse/stationData[1]/stationID/text()',
+                stationManufacturer: '/soap:Envelope/soap:Body/ns1:getStationsResponse/stationData[1]/stationManufacturer/text()',
+                stationModel: '/soap:Envelope/soap:Body/ns1:getStationsResponse/stationData[1]/stationModel/text()',
+                stationSerialNumber: '/soap:Envelope/soap:Body/ns1:getStationsResponse/stationData[1]/stationSerialNum/text()',
+                numPorts: '/soap:Envelope/soap:Body/ns1:getStationsResponse/stationData[1]/numPorts/text()',
+                organizationId: '/soap:Envelope/soap:Body/ns1:getStationsResponse/stationData[1]/orgID/text()',
+                organizationName: '/soap:Envelope/soap:Body/ns1:getStationsResponse/stationData[1]/organizationName/text()',
+                sgId: '/soap:Envelope/soap:Body/ns1:getStationsResponse/stationData[1]/sgID/text()',
+                sgName: '/soap:Envelope/soap:Body/ns1:getStationsResponse/stationData[1]/sgName/text()'
+              }
+            }
+        }
     }
 };
