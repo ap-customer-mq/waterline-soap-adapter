@@ -174,8 +174,24 @@ describe('SOAP Adapter', function() {
       });
     });
     
-    it ('should handle default behavior if no request mappings are provided (TODO - rewrite description of this case)', function(done) {
-      assert.fail("Implement me");
+    it ('should not pass any fields in the request body if there are no request field mappings', function(done) {
+      var args = {
+        stationId: '1:87063'
+      };
+      
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1', function(body) {
+            assert(body.indexOf("<soap:Body><tns:getStations xmlns:tns=\"urn:dictionary:com.chargepoint.webservices\"></tns:getStations></soap:Body>") !== -1, 'expected request body not to contain any fields');
+            return body.indexOf("<soap:Body><tns:getStations xmlns:tns=\"urn:dictionary:com.chargepoint.webservices\"></tns:getStations></soap:Body>") !== -1;
+          })
+          .reply(200, getStationsStub);
+      
+      Station.request('scopeWithNoRequestMappings', args, {}, function(err, result) {
+        assert.isNull(err);
+        assert.isArray(result);
+        assert.equal(result.length, 3);
+        done();
+      });
     }); 
     
     it ('should handle default behavior if no response mappings are provided (TODO - rewrite description of this case)', function(done) {
