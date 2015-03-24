@@ -62,7 +62,6 @@ describe('SOAP Adapter', function() {
       });
     });
     
-    // TODO - 404 and other error codes in which there's no SOAPFault
     it('should gracefully handle HTTP errors that do not result in a SOAPFault', function(done) {
       var args = { 
         organizationId: '1:ORG08313'
@@ -81,8 +80,6 @@ describe('SOAP Adapter', function() {
     });
     
   });
-  
-  // TODO - tests for default behavior
   
   describe('CRUD Operations', function() {
     it('should handle CRUD scenarios', function(done) {
@@ -195,7 +192,7 @@ describe('SOAP Adapter', function() {
       });
     });
     
-    it ('should handle default behavior if no response mappings are provided (TODO - rewrite description of this case)', function(done) {
+    it ('should return an object with no properties for each result when no response mappings are provided', function(done) {
       var args = {};
       
       nock('https://webservices.chargepoint.com')
@@ -226,7 +223,58 @@ describe('SOAP Adapter', function() {
       });
     });
     
-    // TODO - no mapping or request or response element
+    it ('should gracefully handle no request mapping element', function(done) {
+      var args = {
+        stationId: '1:87063'
+      };
+      
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1', function(body) {
+            assert(body.indexOf("<soap:Body><tns:getStations xmlns:tns=\"urn:dictionary:com.chargepoint.webservices\"></tns:getStations></soap:Body>") !== -1, 'expected request body not to contain any fields');
+            return body.indexOf("<soap:Body><tns:getStations xmlns:tns=\"urn:dictionary:com.chargepoint.webservices\"></tns:getStations></soap:Body>") !== -1;
+          })
+          .reply(200, getStationsStub);
+      
+      Station.request('scopeWithNullRequestMapping', args, {}, function(err, result) {
+        assert.isNull(err);
+        assert.isArray(result);
+        assert.equal(result.length, 3);
+        done();
+      });      
+    });
+    
+    it ('should gracefully handle no response mapping element', function(done) {
+      var args = {};
+      
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1')
+          .reply(200, getStationsStub);
+      
+      Station.request('scopeWithNullResponseMapping', args, {}, function(err, result) {
+        assert.isNull(err);
+        assert.isArray(result);
+        assert.equal(result.length, 3);
+        for (var i = 0; i < 3; i++) { assert(_.isEmpty(result[i].toObject())); }
+        done();
+      });
+    });
+
+    it ('should gracefully handle no mapping element', function(done) {
+      var args = {};
+      
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1')
+          .reply(200, getStationsStub);
+      
+      Station.request('scopeWithNullMapping', args, {}, function(err, result) {
+        assert.isNull(err);
+        assert.isArray(result);
+        assert.equal(result.length, 3);
+        for (var i = 0; i < 3; i++) { assert(_.isEmpty(result[i].toObject())); }
+        done();
+      });
+    });
+    
     
     it ('should not fail if no pathSelector is provided', function(done) {
       var args = {};

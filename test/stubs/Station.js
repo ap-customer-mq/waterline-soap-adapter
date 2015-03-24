@@ -220,6 +220,48 @@ module.exports = {
                 sgName: './sgName/text()'
               }
             }
+        },
+        scopeWithNullRequestMapping: {
+          operation: 'getStations',
+          namespaces: {
+            'soap': 'http://schemas.xmlsoap.org/soap/envelope/',
+            'ns1': 'urn:dictionary:com.chargepoint.webservices'
+          },
+          pathSelector: '/soap:Envelope/soap:Body/ns1:getStationsResponse/stationData',
+          mapping: {
+            response: {
+              id: './stationID/text()',
+              stationManufacturer: './stationManufacturer/text()',
+              stationModel: './stationModel/text()',
+              stationSerialNumber: './stationSerialNum/text()',
+              numPorts: './numPorts/text()',
+              organizationId: './orgID/text()',
+              organizationName: './organizationName/text()',
+              sgId: './sgID/text()',
+              sgName: './sgName/text()'
+            }
+          }
+        },
+        scopeWithNullResponseMapping: {
+          operation: 'getStations',
+          namespaces: {
+            'soap': 'http://schemas.xmlsoap.org/soap/envelope/',
+            'ns1': 'urn:dictionary:com.chargepoint.webservices'
+          },
+          pathSelector: '/soap:Envelope/soap:Body/ns1:getStationsResponse/stationData',
+          mapping: {
+            request: {
+              stationId: 'searchQuery[stationID]'
+            }
+          }
+        },
+        scopeWithNullMapping: {
+          operation: 'getStations',
+          namespaces: {
+            'soap': 'http://schemas.xmlsoap.org/soap/envelope/',
+            'ns1': 'urn:dictionary:com.chargepoint.webservices'
+          },
+          pathSelector: '/soap:Envelope/soap:Body/ns1:getStationsResponse/stationData',
         }
     }
 };
