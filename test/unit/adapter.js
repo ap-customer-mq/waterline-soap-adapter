@@ -62,9 +62,23 @@ describe('SOAP Adapter', function() {
     });
     
     // TODO - 404 and other error codes in which there's no SOAPFault
+    it('should gracefully handle HTTP errors that do not result in a SOAPFault', function(done) {
+      var args = { 
+        organizationId: '1:ORG08313'
+      };
+
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1')
+          .reply(404, "Not found");
+
+      Station.request('getStationsForOrganizationScope', args, {}, function(err, result) {
+        assert.isNotNull(err);
+        assert.equal(404, err.response.statusCode);
+        assert.equal("Not found", err.response.body);
+        done();
+      });
+    });
     
-    
-    // TODO - other exception scenarios
   });
   
   // TODO - tests for default behavior
