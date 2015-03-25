@@ -81,14 +81,6 @@ describe('SOAP Adapter', function() {
     
   });
   
-  describe('CRUD Operations', function() {
-    it('should handle CRUD scenarios', function(done) {
-      assert.fail('Implement me!');
-    });
-    
-    // TODO - finish crud scenarios
-  });
-  
   describe('Query Scopes', function() {
     
     it('should successfully invoke getStations call', function(done) {
