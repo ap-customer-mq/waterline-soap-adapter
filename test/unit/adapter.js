@@ -326,4 +326,79 @@ describe('SOAP Adapter', function() {
     });
     
   });
+  
+  describe('Callback hooks', function() {
+    beforeEach(function(done) {
+        delete Station.beforeGetStationsForOrganizationScope;
+        delete Station.afterGetStationsForOrganizationScope;
+        done();
+    });
+    
+    it ('should pass expected parameters to before hook', function(done) {
+      var args = { 
+        
+      };
+      
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1')
+          .reply(200, getStationsStub);
+      
+      Station.beforeGetStationsForOrganizationScope = function(params, cb) {
+        assert.isDefined(params.operationName);
+        assert.isDefined(params.args);
+        assert.isDefined(params.context);
+        done();
+      };
+      
+      Station.request('getStationsForOrganizationScope', args, {}, function(err, result) {  });
+    });
+    
+    it ('should pass expected parameters to after hook', function(done) {
+      var args = {
+        
+      };
+      
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1')
+          .reply(200, getStationsStub);
+      
+      Station.afterGetStationsForOrganizationScope = function(params, cb) {
+        assert.isDefined(params.responseBody);
+        assert.isDefined(params.responseHeaders);
+        assert.isDefined(params.mappedResponse);
+        done();
+      };
+
+      Station.request('getStationsForOrganizationScope', args, {}, function(err, result) { });
+    });
+    
+    it('should properly handle callbacks', function(done) {
+        var args = { };
+
+        nock('https://webservices.chargepoint.com')
+            .post('/webservices/chargepoint/services/4.1')
+            .reply(200, getStationsStub);
+
+        var before = false;
+        var after = false;
+
+        function callDone() {
+            if(before && after) return done();
+        }
+
+        Station.beforeGetStationsForOrganizationScope = function(params, next) {
+            before = true;
+            callDone();
+            next();
+        };
+
+        Station.afterGetStationsForOrganizationScope = function(params, next) {
+            after = true;
+            callDone();
+            next();
+        };
+
+        Station.request('getStationsForOrganizationScope', args, {}, function(err, result) { });
+    });
+  });
 });
