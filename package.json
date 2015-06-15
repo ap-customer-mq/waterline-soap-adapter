@@ -17,7 +17,7 @@
   "readmeFilename": "README.md",
   "dependencies": {
     "lodash": "2.4.1",
-    "soap": "AnyPresence/node-soap#e119d8bbdf2870fa0751773b65e847b5e4c14d75",
+    "soap": "AnyPresence/node-soap#5489edbe57a0809a364d263d9b0a7a6039d345b2",
     "libxmljs": "0.14",
     "handlebars": "2.0.0",
     "inflection": "1.7.0"
