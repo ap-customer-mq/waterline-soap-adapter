@@ -10,5 +10,15 @@ module.exports = {
           passwordType: 'PasswordText',
           useTimestamps: false
         }
+    },
+    testInterpolation: {
+        adapter: 'waterline-soap',
+        wsdl: path.join(__dirname, 'chargepoint.wsdl.xml'),
+        wsSecurity: {
+          username: '{{username}}',
+          password: '{{password}}',
+          passwordType: '{{passwordType}}',
+          useTimestamps: false
+        }
     }
 };

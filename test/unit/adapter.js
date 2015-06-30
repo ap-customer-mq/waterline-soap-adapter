@@ -12,35 +12,84 @@ var getStationsByStationModelResponse = stubs.getStationsByStationModelResponse;
 var getStationsByStationIdResponse = stubs.getStationsByStationIdResponse;
 var exampleSoapFault = stubs.exampleSoapFault;
 
-var waterline, Station;
+var waterline, Station, InterpolatedStation;
 
 before(function(done) {
   var fn = require('../bootstrap-waterline');
   var collections = {
-    "Station": require('../stubs/Station')
+    "Station": require('../stubs/Station'),
+    'InterpolatedStation': require('../stubs/InterpolatedStation')
   };
   waterline = fn(connections, collections, function(err, ontology) {
     Station = ontology.collections['station'];
+    InterpolatedStation = ontology.collections['interpolatedstation'];
     done(err);
   });
 });
 
 describe('SOAP Adapter', function() {
-  
+
+  describe('interpolation', function() {
+    it('should support interpolation for WSSecurity username and password', function(done) {
+      var context = {
+        username: 'test',
+        password: 'secret'
+      };
+
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1', function(body) {
+            nock.cleanAll();
+            var usernameIndex = body.indexOf('<wsse:Username>test</wsse:Username>');
+            var passwordIndex = body.indexOf('<wsse:Password>secret</wsse:Password>');
+            var passwordTypeIndex = body.indexOf('');
+            assert(usernameIndex !== -1, 'Did not find interpolated username');
+            assert(passwordIndex !== -1, 'Did not find interpolated password');
+            return body;
+          })
+          .reply(200, getStationsStub);
+
+      InterpolatedStation.request('getStationsForOrganizationScope', {}, context, function(err) {
+        assert.isNull(err);
+        done();
+      });
+    });
+
+    it('should support interpolation for WSSecurity passwordType', function(done) {
+      var context = {
+        passwordType: 'PasswordDigest'
+      };
+
+      nock('https://webservices.chargepoint.com')
+          .post('/webservices/chargepoint/services/4.1', function(body) {
+            nock.cleanAll();
+            // The password Type attribute should be present when using PasswordDigest
+            var index = body.indexOf('<wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest">');
+            assert(index !== -1, 'Did not interpolate passwordType');
+            return body;
+          })
+          .reply(200, getStationsStub);
+
+      InterpolatedStation.request('getStationsForOrganizationScope', {}, context, function(err) {
+        assert.isNull(err);
+        done();
+      });
+    });
+  });
+
   describe('Exception scenarios', function() {
-    
+
     it ('should gracefully handle an undefined operation', function(done) {
       Station.request('scopeWithInvalidOperation', {}, {}, function(err, result) {
         assert.equal(err, "The requested SOAP operation 'invalidWsdlOperation' is not valid");
         done();
       });
     });
-    
+
     it('should gracefully handle SOAPFaults', function(done) {
       nock('https://webservices.chargepoint.com')
           .post('/webservices/chargepoint/services/4.1')
           .reply(500, exampleSoapFault);
-            
+
       Station.request('getStationsForOrganizationScope', {}, {}, function(err, result) {
         assert.isNotNull(err);
         assert.equal(err.body, exampleSoapFault);
@@ -48,12 +97,12 @@ describe('SOAP Adapter', function() {
         done();
       });
     });
-    
+
     it('should gracefully handle SOAPFaults even when the client returns a 200 http status code', function(done) {
       nock('https://webservices.chargepoint.com')
           .post('/webservices/chargepoint/services/4.1')
           .reply(200, exampleSoapFault);
-            
+
       Station.request('getStationsForOrganizationScope', {}, {}, function(err, result) {
         assert.isNotNull(err);
         assert.equal(err.body, exampleSoapFault);
@@ -61,9 +110,9 @@ describe('SOAP Adapter', function() {
         done();
       });
     });
-    
+
     it('should gracefully handle HTTP errors that do not result in a SOAPFault', function(done) {
-      var args = { 
+      var args = {
         organizationId: '1:ORG08313'
       };
 
@@ -78,13 +127,13 @@ describe('SOAP Adapter', function() {
         done();
       });
     });
-    
+
   });
-  
+
   describe('Query Scopes', function() {
-    
+
     it('should successfully invoke getStations call', function(done) {
-      var args = { 
+      var args = {
         organizationId: '1:ORG08313'
       };
 
@@ -93,18 +142,18 @@ describe('SOAP Adapter', function() {
           .reply(200, getStationsStub);
 
       Station.request('getStationsForOrganizationScope', args, {}, function(err, result) {
-        assert.isNull(err);        
+        assert.isNull(err);
         assert.isArray(result);
         assert.equal(result.length, 3);
         done();
       });
     });
-      
+
     it ('should successfully map fields', function(done) {
-      var args = { 
+      var args = {
         organizationId: '1:ORG08313'
       };
-      
+
       nock('https://webservices.chargepoint.com')
           .post('/webservices/chargepoint/services/4.1')
           .reply(200, getStationsStub);
@@ -124,17 +173,17 @@ describe('SOAP Adapter', function() {
         done();
       });
     });
-    
+
     it ('should allow default parameters', function(done) {
       var args = {};
-      
+
       nock('https://webservices.chargepoint.com')
-          .post('/webservices/chargepoint/services/4.1', function(body) { 
+          .post('/webservices/chargepoint/services/4.1', function(body) {
             assert(body.indexOf("<stationModel>EV230PDRACG</stationModel>") !== -1, 'expected request body to contain default value for stationModel parameter');
             return body.indexOf("<stationModel>EV230PDRACG</stationModel>") !== -1;
           })
           .reply(200, getStationsByStationModelResponse);
-      
+
       Station.request('getStationByStationModelScope', args, {}, function(err, result) {
         assert.isNull(err);
         assert.isArray(result);
@@ -142,20 +191,20 @@ describe('SOAP Adapter', function() {
         done();
       });
     });
-    
+
     it ('should parse request mappings', function(done) {
-      
+
       var args = {
         stationId: "1:87063"
       };
-      
+
       nock('https://webservices.chargepoint.com')
-          .post('/webservices/chargepoint/services/4.1', function(body) { 
+          .post('/webservices/chargepoint/services/4.1', function(body) {
             assert(body.indexOf("<searchQuery><stationID>1:87063</stationID></searchQuery>") !== -1, 'expected request body to contain default value for stationID parameter');
             return body.indexOf("<searchQuery><stationID>1:87063</stationID></searchQuery>") !== -1;
           })
           .reply(200, getStationsByStationIdResponse);
-      
+
       Station.request('getStationByStationIdScope', args, {}, function(err, result) {
         assert.isNull(err);
         assert.isArray(result);
@@ -163,19 +212,19 @@ describe('SOAP Adapter', function() {
         done();
       });
     });
-    
+
     it ('should not pass any fields in the request body if there are no request field mappings', function(done) {
       var args = {
         stationId: '1:87063'
       };
-      
+
       nock('https://webservices.chargepoint.com')
           .post('/webservices/chargepoint/services/4.1', function(body) {
             assert(body.indexOf("<soap:Body><tns:getStations xmlns:tns=\"urn:dictionary:com.chargepoint.webservices\"></tns:getStations></soap:Body>") !== -1, 'expected request body not to contain any fields');
             return body.indexOf("<soap:Body><tns:getStations xmlns:tns=\"urn:dictionary:com.chargepoint.webservices\"></tns:getStations></soap:Body>") !== -1;
           })
           .reply(200, getStationsStub);
-      
+
       Station.request('scopeWithNoRequestMappings', args, {}, function(err, result) {
         assert.isNull(err);
         assert.isArray(result);
@@ -183,14 +232,14 @@ describe('SOAP Adapter', function() {
         done();
       });
     });
-    
+
     it ('should return an object with no properties for each result when no response mappings are provided', function(done) {
       var args = {};
-      
+
       nock('https://webservices.chargepoint.com')
           .post('/webservices/chargepoint/services/4.1')
           .reply(200, getStationsStub);
-      
+
       Station.request('scopeWithNoResponseMappings', args, {}, function(err, result) {
         assert.isNull(err);
         assert.isArray(result);
@@ -199,14 +248,14 @@ describe('SOAP Adapter', function() {
         done();
       });
     });
-    
+
     it ('should gracefully handle a response where the path selector does not select a valid node', function(done) {
       var args = {};
 
       nock('https://webservices.chargepoint.com')
           .post('/webservices/chargepoint/services/4.1')
           .reply(200, getStationsStub);
-      
+
       Station.request('scopeWithBogusPathSelector', args, {}, function(err, result) {
         assert.isNull(err);
         assert.isArray(result);
@@ -214,34 +263,34 @@ describe('SOAP Adapter', function() {
         done();
       });
     });
-    
+
     it ('should gracefully handle no request mapping element', function(done) {
       var args = {
         stationId: '1:87063'
       };
-      
+
       nock('https://webservices.chargepoint.com')
           .post('/webservices/chargepoint/services/4.1', function(body) {
             assert(body.indexOf("<soap:Body><tns:getStations xmlns:tns=\"urn:dictionary:com.chargepoint.webservices\"></tns:getStations></soap:Body>") !== -1, 'expected request body not to contain any fields');
             return body.indexOf("<soap:Body><tns:getStations xmlns:tns=\"urn:dictionary:com.chargepoint.webservices\"></tns:getStations></soap:Body>") !== -1;
           })
           .reply(200, getStationsStub);
-      
+
       Station.request('scopeWithNullRequestMapping', args, {}, function(err, result) {
         assert.isNull(err);
         assert.isArray(result);
         assert.equal(result.length, 3);
         done();
-      });      
+      });
     });
-    
+
     it ('should gracefully handle no response mapping element', function(done) {
       var args = {};
-      
+
       nock('https://webservices.chargepoint.com')
           .post('/webservices/chargepoint/services/4.1')
           .reply(200, getStationsStub);
-      
+
       Station.request('scopeWithNullResponseMapping', args, {}, function(err, result) {
         assert.isNull(err);
         assert.isArray(result);
@@ -253,11 +302,11 @@ describe('SOAP Adapter', function() {
 
     it ('should gracefully handle no mapping element', function(done) {
       var args = {};
-      
+
       nock('https://webservices.chargepoint.com')
           .post('/webservices/chargepoint/services/4.1')
           .reply(200, getStationsStub);
-      
+
       Station.request('scopeWithNullMapping', args, {}, function(err, result) {
         assert.isNull(err);
         assert.isArray(result);
@@ -266,18 +315,18 @@ describe('SOAP Adapter', function() {
         done();
       });
     });
-    
-    
+
+
     it ('should not fail if no pathSelector is provided', function(done) {
       var args = {};
-      
+
       nock('https://webservices.chargepoint.com')
           .post('/webservices/chargepoint/services/4.1')
           .reply(200, getStationsStub);
-      
+
       Station.request('scopeWithNoPathSelector', args, {}, function(err, result) {
         assert.isNull(err);
-        
+
         assert.isArray(result);
         assert.equal(result.length, 1);
 
@@ -295,20 +344,20 @@ describe('SOAP Adapter', function() {
         done();
       });
     });
-    
+
     it ('should allow namespaces in request mappings', function(done) {
-      
+
       var args = {
         stationId: "1:87063"
       };
-      
+
       nock('https://webservices.chargepoint.com')
-          .post('/webservices/chargepoint/services/4.1', function(body) { 
+          .post('/webservices/chargepoint/services/4.1', function(body) {
             assert(body.indexOf("<tns:searchQuery><tns:stationID>1:87063</tns:stationID></tns:searchQuery>") !== -1, 'expected request body to contain value for stationID parameter with specified namespaces');
             return body.indexOf("<tns:searchQuery><tns:stationID>1:87063</tns:stationID></tns:searchQuery>") !== -1;
           })
           .reply(200, getStationsByStationIdResponse);
-      
+
       Station.request('getStationByStationIdWithNamespacedRequestMappingsScope', args, {}, function(err, result) {
         assert.isNull(err);
         assert.isArray(result);
