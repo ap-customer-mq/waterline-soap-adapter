@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/AnyPresence/waterline-soap-adapter"
+    "url": "git://github.com/ap-customer-mq/waterline-soap-adapter"
   },
   "author": {
     "name": "AnyPresence"
@@ -17,7 +17,7 @@
   "readmeFilename": "README.md",
   "dependencies": {
     "lodash": "2.4.1",
-    "soap": "AnyPresence/node-soap#2209bb461672fb9f348d9af2bbfe7ca98b9763a9",
+    "soap": "ap-customer-mq/node-soap#2209bb461672fb9f348d9af2bbfe7ca98b9763a9",
     "libxmljs": "0.14",
     "handlebars": "2.0.0",
     "inflection": "1.7.0"
@@ -34,7 +34,7 @@
     "waterlineVersion": "~0.10.0"
   },
   "bugs": {
-    "url": "https://github.com/AnyPresence/waterline-soap-adapter/issues"
+    "url": "https://github.com/ap-customer-mq/waterline-soap-adapter/issues"
   },
-  "homepage": "https://github.com/AnyPresence/waterline-soap-adapter"
+  "homepage": "https://github.com/ap-customer-mq/waterline-soap-adapter"
 }
